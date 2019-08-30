@@ -1,5 +1,5 @@
 {
-  "name": "canadian-addition",
+  "name": "express",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,11 +12,6 @@
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "nodemon": "^1.19.1",
-<<<<<<< HEAD
-    "socketio": "^1.0.0"
-=======
     "socket.io": "^2.2.0"
->>>>>>> develop
   }
 }

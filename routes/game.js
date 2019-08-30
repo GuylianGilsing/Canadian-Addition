@@ -1,11 +1,9 @@
-console.log("12")
-
 var express = require('express');
 var router = express.Router();
 
-/* GET game page. */
-router.get('/game', function(req, res, next) {
-  res.render('game', { title: 'Game' });
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
 });
 
 module.exports = router;
