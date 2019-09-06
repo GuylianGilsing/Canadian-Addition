@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "express-redirect": "^1.2.2",
     "install": "^0.13.0",
+    "jest": "^24.9.0",
     "mysql": "^2.17.1",
     "nodemon": "^1.19.1",
     "npm": "^6.11.2",

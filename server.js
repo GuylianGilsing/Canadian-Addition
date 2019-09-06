@@ -26,6 +26,7 @@ app.on('listening', function () {
         console.log("test");
     });
 });
+
 //routes
 app.get('/', (request, response) => {
     response.sendFile(__dirname + '/index.html');
@@ -38,15 +39,11 @@ app.get('/room', (request, response) => {
     currentroomid = request.query.room;
 });
 
+// Serve static files.
 app.get('/game.js', (request, response) => {response.sendFile(__dirname + '/assets/js/game.js');});
 app.get('/style.css', (request, response) => {response.sendFile(__dirname + '/assets/css/style.css');});
-
-app.get('/app.js', (request, response) => {
-    response.sendFile(__dirname + '/app.js');
-});
-app.get('/index.js', (request, response) => {
-    response.sendFile(__dirname + '/index.js');
-});
+app.get('/app.js', (request, response) => {response.sendFile(__dirname + '/app.js');});
+app.get('/index.js', (request, response) => {response.sendFile(__dirname + '/index.js');});
 
 //listen to port 3000
 http.listen(port, () => {
@@ -72,8 +69,10 @@ io.of("/").on("connection", (socket) => {
                     //update room client amount, join room
                     con.query("UPDATE rooms SET user_amount = '2' WHERE room_id = '" + currentroomid + "'", function (err, result) {
                         socket.join(currentroomid);
+
                         io.of("/").in(currentroomid).emit("playerTwo");
                         io.of("/").in(currentroomid).emit("allPlayersJoined");
+                        
                         console.log("client joined room:" + currentroomid);
                     });
                 } else {
