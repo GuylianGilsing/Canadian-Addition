@@ -9,8 +9,11 @@ var con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "canadees_vermeningvuldigen"
+    database: "canadian_addition"
 });
+
+app.use(express.static('assets'));
+app.use(express.static('js'));
 
 con.connect(function (err) {
     if (err) throw err;
@@ -30,9 +33,13 @@ app.get('/', (request, response) => {
 
 app.get('/room', (request, response) => {
     response.sendFile(__dirname + '/room.html');
+
     //get parameters from url
     currentroomid = request.query.room;
 });
+
+app.get('/game.js', (request, response) => {response.sendFile(__dirname + '/assets/js/game.js');});
+app.get('/style.css', (request, response) => {response.sendFile(__dirname + '/assets/css/style.css');});
 
 app.get('/app.js', (request, response) => {
     response.sendFile(__dirname + '/app.js');
@@ -40,6 +47,7 @@ app.get('/app.js', (request, response) => {
 app.get('/index.js', (request, response) => {
     response.sendFile(__dirname + '/index.js');
 });
+
 //listen to port 3000
 http.listen(port, () => {
     con.query("DELETE  FROM rooms ", function (err, result) {
@@ -64,6 +72,8 @@ io.of("/").on("connection", (socket) => {
                     //update room client amount, join room
                     con.query("UPDATE rooms SET user_amount = '2' WHERE room_id = '" + currentroomid + "'", function (err, result) {
                         socket.join(currentroomid);
+                        io.of("/").in(currentroomid).emit("playerTwo");
+                        io.of("/").in(currentroomid).emit("allPlayersJoined");
                         console.log("client joined room:" + currentroomid);
                     });
                 } else {
@@ -79,6 +89,7 @@ io.of("/").on("connection", (socket) => {
                 con.query("INSERT INTO rooms (room_id, user_amount) VALUES ('" + currentroomid + "', '1')", function (err, result) {
                     if (err) throw err;
                     socket.join(currentroomid);
+                    io.of("/").in(currentroomid).emit("playerOne");
                     console.log("room created:" + currentroomid);
                 });
             }

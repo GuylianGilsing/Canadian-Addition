@@ -1,3 +1,5 @@
+var currentRoomId = undefined;
+
 var socket = io();
 var url = location.href;
 url = url.substring(url.indexOf("?")+1);
