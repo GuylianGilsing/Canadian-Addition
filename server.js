@@ -123,8 +123,10 @@ io.of("/").on("connection", (socket) => {
 
     // Player turn is over.
     socket.on('newTurn', (gameData) => {
+
+        console.log(gameData);
         
-        if(activePlayerNumber == 1)
+        if(gameData.player == "player-one")
             activePlayerNumber = 2;
         else
             activePlayerNumber = 1;
@@ -132,7 +134,13 @@ io.of("/").on("connection", (socket) => {
         totalTurns = gameData.turns;
         gameData.turns = (totalTurns + 1);
 
+        console.log(activePlayerNumber);
+
         gameData['activePlayer'] = activePlayerNumber;
         io.of("/").in(currentroomid).emit("beginNewTurn", gameData);
     });
+
+    socket.on('winGame', (player) => {
+        io.of("/").in(currentroomid).emit("winGame", player);
+    })
 });

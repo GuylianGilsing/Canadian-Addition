@@ -97,6 +97,13 @@ socket.on("beginNewTurn", (gameData) => {
     chosenFields = gameData.chosenFields;
 });
 
+socket.on('winGame', (player) => {
+    if(player == currentPlayer)
+        WinGame();
+    else
+        EndGame();
+});
+
 function GeneratePlayField()
 {
     // Generate playfield.
@@ -304,7 +311,7 @@ function EndTurn()
         // Check any potential wins.
         if(CheckWin() == true)
         {
-            WinGame();
+            socket.emit('winGame', currentPlayer);
         }
         else
         {
