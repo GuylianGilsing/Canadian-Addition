@@ -73,9 +73,10 @@ socket.on("allPlayersJoined", () => {
 })
 
 socket.on("beginNewTurn", (gameData) => {
+    console.log(gameData);
+
     for(let column of playCols)
     {
-        console.log(column);
         if(Number(column.getAttribute('data-x')) == gameData.column.x && Number(column.getAttribute('data-y')) == gameData.column.y)
         {
             column.classList.add('chosen');
@@ -120,7 +121,7 @@ function GeneratePlayField()
         output += '<div class="choose-row">';
         for(let x = 0; x < chooseMatrix[i].length; x += 1)
         {
-            output += '<div class="field-col" data-number="' + chooseMatrix[i][x] + '">' + '<p>' + chooseMatrix[i][x] + '</p>' + '</div>';
+            output += '<div class="field-col" data-x="' + x + '" data-y="' + i + '" data-number="' + chooseMatrix[i][x] + '">' + '<p>' + chooseMatrix[i][x] + '</p>' + '</div>';
         }
         output += '</div>';
     }
@@ -196,13 +197,16 @@ function ChooseColumn()
     // Make sure that the column is empty.
     if(ColumnIsEmpty(this))
     {
+        console.log(this);
         // Move the second column to the first position, and overwrite the second position.
         console.log(chosenFields[0]);
-        let lastChosenField = GetColumnByCoordinates(chosenFields[0].x, chosenFields[0].y);
-        lastChosenField.classList.remove('chosen');
+        
+        GetColumnByCoordinates("choose", chosenFields[0].x, chosenFields[0].y).classList.remove('chosen');
         chosenFields[0] = chosenFields[1];
-        chosenFields[0].classList.remove('chosen');
+        
+        GetColumnByCoordinates("choose", chosenFields[0].x, chosenFields[0].y).classList.remove('chosen');
         chosenFields[1] = {'x': this.getAttribute('data-x'), 'y': this.getAttribute('data-y'), 'number': this.getAttribute('data-number')};
+        
         this.classList.add('chosen');
         EndTurn();
         return;
@@ -237,15 +241,14 @@ function ColumnIsEmpty(newCol)
     return output;
 }
 
-function GetColumnByCoordinates(x, y)
+function GetColumnByCoordinates(field, x, y)
 {
     let output = undefined;
 
-    for(let column of playCols)
-    {
-        if(column.getAttribute('data-x') == x && column.getAttribute('data-y') == y)
-            output = column;
-    }
+    if(field == "play")
+        output = document.querySelector('.field-row .field-col[data-x="' + x + '"][data-y="' + y + '"]');
+    else
+        output = document.querySelector('.choose-row .field-col[data-x="' + x + '"][data-y="' + y + '"]');    
 
     return output;
 }
