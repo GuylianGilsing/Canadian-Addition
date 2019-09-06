@@ -26,22 +26,14 @@ app.on('listening', function () {
         console.log("test");
     });
 });
-
-//routes
-app.get('/', (request, response) => {
-    response.sendFile(__dirname + '/index.html');
-});
-
-app.get('/room', (request, response) => {
-    response.sendFile(__dirname + '/room.html');
-
-    //get parameters from url
-    currentroomid = request.query.room;
-});
+app.get('/', (request, response) => {response.sendFile(__dirname + '/index.html');});
+app.get('/room', (request, response) => {response.sendFile(__dirname + '/room.html');currentroomid = request.query.room;});
 
 // Serve static files.
 app.get('/game.js', (request, response) => {response.sendFile(__dirname + '/assets/js/game.js');});
 app.get('/style.css', (request, response) => {response.sendFile(__dirname + '/assets/css/style.css');});
+app.get('/index.css', (request, response) => {response.sendFile(__dirname + '/assets/css/index.css');});
+app.get('/logo.png', (request, response) => {response.sendFile(__dirname + '/assets/img/logo.png');});
 app.get('/app.js', (request, response) => {response.sendFile(__dirname + '/app.js');});
 app.get('/index.js', (request, response) => {response.sendFile(__dirname + '/index.js');});
 
