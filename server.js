@@ -47,6 +47,10 @@ http.listen(port, () => {
 //connect to namespace /
 io.of("/").on("connection", (socket) => {
     var currentroomid = "";
+
+    let activePlayerNumber = 1;
+    let totalTurns = 0;
+
     //send request to join the room
     socket.emit("roomRequest");
     //join room
@@ -115,5 +119,20 @@ io.of("/").on("connection", (socket) => {
                 }
             }
         });
+    });
+
+    // Player turn is over.
+    socket.on('newTurn', (gameData) => {
+        
+        if(activePlayerNumber == 1)
+            activePlayerNumber = 2;
+        else
+            activePlayerNumber = 1;
+
+        totalTurns = gameData.turns;
+        gameData.turns = (totalTurns + 1);
+
+        gameData['activePlayer'] = activePlayerNumber;
+        io.of("/").in(currentroomid).emit("beginNewTurn", gameData);
     });
 });

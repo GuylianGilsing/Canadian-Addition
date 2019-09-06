@@ -14,20 +14,35 @@
     <script defer src="game.js"></script>
 </head>
 <body>
-    <header>
-        <nav>
-            <img src="./img/candianflag.jpg" alt="Canadian Flag" class="logo">
-            <p>Canadees Vermenigvuldigen</p>
-        </nav>
-    </header>
-    <div id="game-field">
-        <div class="gamefield">
-            <p>Waiting for player two to join.</p>
-            <!-- Playfield will be generated in here. -->
+    <div id="game-container">
+        <div id="game-field">
+            <div class="gamefield hide">
+                <!-- Playfield will be generated in here. -->
+            </div>
+            <div class="clear"></div>
+            <div class="gamefield choose-field">
+                
+            </div>
+            <div id="preloader" class="show">
+                <p>Wachten op speler 2...</p>
+            </div>
         </div>
-        <div class="clear"></div>
-        <div class="gamefield choose-field">
-
+        <div id="sidebar">
+            <div id="game-header">
+                <img src="./img/candianflag.jpg" alt="Canadian Flag" class="logo">
+                <p>Canadees Vermenigvuldigen</p>
+            </div>
+            <div id="game-chat">
+                <div class="messages">
+                    <p class="chat-message global">Speler 1 is aan de beurt</p>
+                    <p class="chat-message self">Sup</p>
+                    <p class="chat-message">Waddup cuck</p>
+                </div>
+                <div>
+                    <textarea id="" rows="5"></textarea>
+                    <button class="btn btn-color-blue">Verzenden</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

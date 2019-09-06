@@ -22,14 +22,11 @@ let chooseMatrix = [
 
 let playfield = document.querySelector("#game-field > .gamefield");
 let choosefield = document.querySelector("#game-field > .gamefield.choose-field");
-let chatMessagesContainer = document.querySelector("#game-chat > .messages");
-
 let playCols = [];
 
 // Game variables.
 let gameRunning = false;
 let currentPlayerActive = 0;
-let currentPlayer = undefined;
 let turn = 0;
 
 // Holds all of the taken fields by the players.
@@ -42,58 +39,15 @@ let chosenFields = [];
 let lastChooseField = Node;
 let playerWon = undefined;
 
-let gameUI = {
-    'player-active': document.querySelector("#game-ui.player-active"),
-}
-
 /*
 
     --- Initialization ---
 
 */
 
-socket.on("playerOne", () => {
-    currentPlayer = 'player-one';
-    console.log(currentPlayer);
-});
-
-socket.on("playerTwo", () => {
-    if(currentPlayer == undefined)
-    {
-        currentPlayer = 'player-two';
-        console.log(currentPlayer);
-    }
-});
-
-socket.on("allPlayersJoined", () => {
-    playfield.classList.remove('hide');
-    document.querySelector("#preloader.show").remove();
+document.addEventListener('DOMContentLoaded', function(){    
     GeneratePlayField();
     StartGame();
-})
-
-socket.on("beginNewTurn", (gameData) => {
-    for(let column of playCols)
-    {
-        console.log(column);
-        if(Number(column.getAttribute('data-x')) == gameData.column.x && Number(column.getAttribute('data-y')) == gameData.column.y)
-        {
-            column.classList.add('chosen');
-
-            if(gameData.player == 'player-one')
-            {
-                column.classList.add('player-one');                
-            }
-            else
-            {
-                column.classList.add('player-two');
-            }
-        }
-    }
-
-    currentPlayerActive = gameData.activePlayer;
-    turn = gameData.turns;
-    chosenFields = gameData.chosenFields;
 });
 
 function GeneratePlayField()
@@ -134,8 +88,6 @@ function StartGame()
     choosefield.classList.add('player-one-active');
     currentPlayerActive = 1;
 
-    chatMessagesContainer.innerHTML += '<p class="chat-message global">Speler 1 is aan de beurt</p>';
-
     // Add choose column logic.
     let chooseColumns = document.querySelectorAll(".gamefield.choose-field .field-col");
     if(chooseColumns.length > 0)
@@ -172,10 +124,6 @@ function ChooseColumn()
     if(gameRunning == false)
         return;
 
-    // Make sure that the current active player can only click on the buttons.
-    if((currentPlayerActive == 1 && currentPlayer == 'player-two') || (currentPlayerActive == 2 && currentPlayer == 'player-one'))
-        return;
-
     // In the first turn the first player can choose two columns.
     if(turn == 0)
     {
@@ -183,12 +131,12 @@ function ChooseColumn()
         if(chosenFields.length < 1)
         {
             this.classList.add('chosen');
-            chosenFields.push({'x': this.getAttribute('data-x'), 'y': this.getAttribute('data-y'), 'number': this.getAttribute('data-number')});
+            chosenFields.push(this);
             return;
         }
 
         this.classList.add('chosen');
-        chosenFields.push({'x': this.getAttribute('data-x'), 'y': this.getAttribute('data-y'), 'number': this.getAttribute('data-number')});
+        chosenFields.push(this);
         EndTurn();
         return;
     }
@@ -197,12 +145,10 @@ function ChooseColumn()
     if(ColumnIsEmpty(this))
     {
         // Move the second column to the first position, and overwrite the second position.
-        console.log(chosenFields[0]);
-        let lastChosenField = GetColumnByCoordinates(chosenFields[0].x, chosenFields[0].y);
-        lastChosenField.classList.remove('chosen');
+        chosenFields[0].classList.remove('chosen');
         chosenFields[0] = chosenFields[1];
         chosenFields[0].classList.remove('chosen');
-        chosenFields[1] = {'x': this.getAttribute('data-x'), 'y': this.getAttribute('data-y'), 'number': this.getAttribute('data-number')};
+        chosenFields[1] = this;
         this.classList.add('chosen');
         EndTurn();
         return;
@@ -219,8 +165,8 @@ function ColumnIsEmpty(newCol)
  
     output = true;
 
-    let firstNumber = chosenFields[1].number;
-    let secondNumber = newCol.number;
+    let firstNumber = chosenFields[1].getAttribute('data-number');
+    let secondNumber = newCol.getAttribute('data-number');
 
     // Get the column that corresponds to the outcome of the final number.
     let finalNumber = firstNumber * secondNumber;
@@ -237,41 +183,22 @@ function ColumnIsEmpty(newCol)
     return output;
 }
 
-function GetColumnByCoordinates(x, y)
-{
-    let output = undefined;
-
-    for(let column of playCols)
-    {
-        if(column.getAttribute('data-x') == x && column.getAttribute('data-y') == y)
-            output = column;
-    }
-
-    return output;
-}
-
 // Ends the turn selects fields, updates the total turns and calculates possible outcomes.
 function EndTurn()
 {
     if(chosenFields.length < 2)
         return;
 
-    let firstNumber = chosenFields[0].number;
-    let secondNumber = chosenFields[1].number;
+    let firstNumber = chosenFields[0].getAttribute('data-number');
+    let secondNumber = chosenFields[1].getAttribute('data-number');
 
     // Get the column that corresponds to the outcome of the final number.
     let finalNumber = firstNumber * secondNumber;
-    let selectedColumn = undefined;
 
     for(let column of playCols)
     {
         if(column.getAttribute('data-number') == finalNumber)
         {
-            selectedColumn = {
-                'x': Number(column.getAttribute('data-x')),
-                'y': Number(column.getAttribute('data-y')),
-            };
-
             column.classList.add('chosen');
 
             if(currentPlayerActive == 1)
@@ -303,15 +230,8 @@ function EndTurn()
         {
             WinGame();
         }
-        else
-        {
-            if(currentPlayerActive == 1)
-                chatMessagesContainer.innerHTML += '<p class="chat-message global">Speler 1 is aan de beurt</p>';
-            if(currentPlayerActive == 2)
-                chatMessagesContainer.innerHTML += '<p class="chat-message global">Speler 2 is aan de beurt</p>';
 
-            socket.emit("newTurn", {'player': currentPlayer, 'column': selectedColumn, 'turns': turn, 'chosenFields': chosenFields});
-        }
+        turn += 1;
     }
     else
     {
@@ -320,10 +240,10 @@ function EndTurn()
 }
 
 // Checks if the game can still be continued, if not it will terminate the game.
-function CheckDraw(col)
+function CheckDraw(column)
 {
     let output = true;
-    let chooseValue = Number(col.number);
+    let chooseValue = column.getAttribute('data-number');
 
     let outcomes = [];
     for(let i = 1; i <= 9; i += 1)
@@ -342,8 +262,6 @@ function CheckDraw(col)
             }
         }
     }
-
-    console.log(output);
 
     return output;
 }
