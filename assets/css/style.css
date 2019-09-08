@@ -225,11 +225,11 @@ body{
     background-color: #000;
 }
 
-.gamefield.choose-field.player-one-active .field-col:hover:after, .gamefield.player-one-active .field-col.chosen:after, .gamefield .field-col.chosen.player-one:after{
+.gamefield.choose-field.player-one-active .field-col:hover:after, .gamefield .field-col.chosen.player-one:after{
     background-color: #ff0000;
 }
 
-.gamefield.choose-field.player-two-active .field-col:hover:after, .gamefield.player-two-active .field-col.chosen:after, .gamefield .field-col.chosen.player-two:after{
+.gamefield.choose-field.player-two-active .field-col:hover:after, .gamefield .field-col.chosen.player-two:after{
     background-color: #0000ff;
 }
 

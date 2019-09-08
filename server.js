@@ -121,8 +121,12 @@ io.of("/").on("connection", (socket) => {
         });
     });
 
+    socket.on('endTurn', (columns) => {
+        io.of('/').in(currentroomid).emit('endTurn', columns);
+    });
+
     // Player turn is over.
-    socket.on('newTurn', (gameData) => {
+    socket.on('startNewTurn', (gameData) => {
 
         console.log(gameData);
         
@@ -133,11 +137,11 @@ io.of("/").on("connection", (socket) => {
 
         totalTurns = gameData.turns;
         gameData.turns = (totalTurns + 1);
-
-        console.log(activePlayerNumber);
-
+        
         gameData['activePlayer'] = activePlayerNumber;
-        io.of("/").in(currentroomid).emit("beginNewTurn", gameData);
+
+        // Send the data to start a new turn.
+        io.of("/").in(currentroomid).emit("startNewTurn", gameData);
     });
 
     socket.on('winGame', (player) => {
