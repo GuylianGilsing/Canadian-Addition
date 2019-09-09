@@ -8,3 +8,6 @@ function createRoom()
 {
     window.location =("room?" + uuidv4());
 }
+function localPlay() {
+    window.location = ("/local");
+}
