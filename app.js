@@ -26,7 +26,7 @@ function sendMessage() {
     socket.emit("chatMessage", currentPlayer, document.getElementById("chat-bar").value);
     document.getElementById("chat-bar").value = "";
 }
-function onTestChange() {
+function onTextChange() {
     var key = window.event.keyCode;
     if (key === 13) {
         sendMessage();
