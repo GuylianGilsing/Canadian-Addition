@@ -89,7 +89,7 @@ body{
     --- Game chat ---
 
 */
-
+#chat
 #game-chat{
     height: 100%;
     display: flex;
@@ -135,6 +135,11 @@ body{
     display: block;
 }
 
+#message-container
+{
+    overflow: auto;
+    height: 36em;
+}
 /*
 
     --- Playfield ---

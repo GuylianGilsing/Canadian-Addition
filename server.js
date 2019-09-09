@@ -149,5 +149,9 @@ io.of("/").on("connection", (socket) => {
 
     socket.on('winGame', (player) => {
         io.of("/").in(currentroomid).emit("winGame", player);
+    });
+
+    socket.on('chatMessage', (player, msg) => {
+        io.of("/").in(currentroomid).emit("chatMessageReceived", player, msg);
     })
 });

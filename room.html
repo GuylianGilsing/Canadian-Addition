@@ -33,14 +33,14 @@
                 <p>Canadees Vermenigvuldigen</p>
             </div>
             <div id="game-chat">
-                <div class="messages">
+                <div class="messages" id="message-container">
                     <p class="chat-message global">Speler 1 is aan de beurt</p>
                     <p class="chat-message self">Sup</p>
                     <p class="chat-message">Waddup cuck</p>
                 </div>
                 <div>
-                    <textarea id="" rows="5"></textarea>
-                    <button class="btn btn-color-blue">Verzenden</button>
+                    <textarea id="chat-bar" rows="5" onkeypress="onTestChange()"></textarea>
+                    <button onclick="sendMessage()" class="btn btn-color-blue">Verzenden</button>
                 </div>
             </div>
         </div>
