@@ -1,6 +1,5 @@
 body{
     background-image: url('../img/background-uncolored.png');
-    background-size: 30vh;
 }
 .hide{opacity: 0; pointer-events: none}
 .show{opacity: 1; pointer-events: all}
@@ -89,12 +88,10 @@ body{
     --- Game chat ---
 
 */
-#chat
 #game-chat{
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
 }
 
 #game-chat .messages{
@@ -123,15 +120,17 @@ body{
 }
 
 #game-chat textarea{
-    width: 100%;
+    width: 97%;
     margin-bottom: 12px;
     padding: 4px;
+    margin: 5px;
     outline: none;
     resize: none;
 }
 
 #game-chat button{
     width: unset;
+    margin-left: 5px;
     display: block;
 }
 
