@@ -98,6 +98,16 @@ function StartGame()
         }
     }
 
+    // Get all of the field columns from the playfield.
+    playCols = document.querySelectorAll("#game-field > .gamefield .field-row .field-col");
+
+    for(let col of playCols)
+    {
+        col.addEventListener('click', function(){
+            this.classList.add('chosen');
+            this.classList.add('player-one');
+        })
+    }
 
     gameRunning = true;
 }
@@ -114,6 +124,9 @@ function ChooseColumn()
     if(gameRunning == false)
         return;
 
+    
+    let curPlayer = currentPlayerActive == 1 ? 'player-one' : 'player-two';
+
     // In the first turn the first player can choose two columns.
     if(turn == 0)
     {
@@ -121,12 +134,16 @@ function ChooseColumn()
         if(chosenFields.length < 1)
         {
             this.classList.add('chosen');
+            this.classList.add(curPlayer);
             chosenFields.push(this);
+            
             return;
         }
 
         this.classList.add('chosen');
+        this.classList.add(curPlayer);
         chosenFields.push(this);
+
         EndTurn();
         return;
     }
@@ -136,10 +153,16 @@ function ChooseColumn()
     {
         // Move the second column to the first position, and overwrite the second position.
         chosenFields[0].classList.remove('chosen');
+        chosenFields[0].classList.remove('player-one');
+        chosenFields[0].classList.remove('player-two');
+
         chosenFields[0] = chosenFields[1];
         chosenFields[0].classList.remove('chosen');
-        chosenFields[1] = this;
+        
         this.classList.add('chosen');
+        this.classList.add(curPlayer);
+        chosenFields[1] = this;
+        
         EndTurn();
         return;
     }
@@ -202,30 +225,30 @@ function EndTurn()
         }
     }
 
-    if(currentPlayerActive == 1)
-    {
-        choosefield.classList.replace('player-one-active', 'player-two-active');
-        currentPlayerActive = 2;
-    }
-    else
-    {
-        choosefield.classList.replace('player-two-active', 'player-one-active');
-        currentPlayerActive = 1;
-    }
-
     if(CheckDraw(chosenFields[1]) == false)
     {
         // Check any potential wins.
         if(CheckWin() == true)
         {
-            WinGame();
+            EndGame("win");
+        }
+
+        if(currentPlayerActive == 1)
+        {
+            choosefield.classList.replace('player-one-active', 'player-two-active');
+            currentPlayerActive = 2;
+        }
+        else
+        {
+            choosefield.classList.replace('player-two-active', 'player-one-active');
+            currentPlayerActive = 1;
         }
 
         turn += 1;
     }
     else
     {
-        EndGame();
+        EndGame("draw");
     }
 }
 
@@ -256,30 +279,47 @@ function CheckDraw(column)
     return output;
 }
 
-function WinGame()
+function EndGame(type)
 {
     choosefield.classList.remove('game-active');
     gameRunning == false;
 
-    for(let column of playCols)
+    // Remove eventListeners.
+    let chooseColumns = document.querySelectorAll(".gamefield.choose-field .choose-row .field-col");
+    if(chooseColumns.length > 0)
     {
-        column.removeEventListener('click', ChooseColumn);
+        for(let column of chooseColumns)
+        {
+            column.removeEventListener('click', ChooseColumn);
+        }
     }
 
-    console.log("GAME WON!!! by player: " + playerWon)
-}
-
-function EndGame()
-{
-    choosefield.classList.remove('game-active');
-    gameRunning == false;
-
-    for(let column of playCols)
+    // Give an appropiate response to the type.
+    if(type == "win")
     {
-        column.removeEventListener('click', ChooseColumn);
-    }
+        // A player won the game, display a modal whichs shows the player that won.
 
-    console.log("GAME END!!!");
+        // Change the status message.
+        let statusMessage = document.querySelector("#gamefield-popup .messagebox .status");
+        if(currentPlayerActive == 1)
+            statusMessage.innerHTML = 'Speler 1 heeft gewonnen';
+        else if(currentPlayerActive == 2)
+            statusMessage.innerHTML = 'Speler 2 heeft gewonnen';
+
+        // Display the popup.
+        let popup = document.querySelector("#gamefield-popup");
+        popup.classList.add('show');
+    }
+    else if(type == "draw")
+    {
+        // Change the status message.
+        let statusMessage = document.querySelector("#gamefield-popup .messagebox .status");
+        statusMessage.innerHTML = 'Gelijkspel';
+
+        // Display the popup.
+        let popup = document.querySelector("#gamefield-popup");
+        popup.classList.add('show');
+    }
 }
 
 // Checks if someone won the game.
@@ -628,6 +668,7 @@ function HasDiagonalTopRightToBottomLeftMatches(columnData, column, searchValue=
         return matched;
     }
 }
+
 function homePage() {
     window.location = "/";
 }

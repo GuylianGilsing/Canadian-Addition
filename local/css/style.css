@@ -16,6 +16,54 @@ header nav{text-align: center;}
     cursor: pointer;
 }
 
+/* 
+
+    --- Gamefield Popup ---
+
+*/
+
+#game-field #gamefield-popup:not(.show){
+    opacity: 0;
+    pointer-events: none;
+}
+
+#game-field #gamefield-popup{
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    z-index: 100;
+}
+
+#game-field #gamefield-popup:before{
+    content: '';
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    opacity: 0.4;
+    z-index: 99;
+    background-color: #000;
+}
+
+#game-field #gamefield-popup .messagebox{
+    width: 80%;
+    max-width: 500px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    z-index: 101;
+    background-color: #fff;
+}
+
+#game-field #gamefield-popup .messagebox .status{
+    margin: 12px 0px;
+    font-size: 24px;
+}
+
 /* Playfield styles */
 #game-field{
     width: 100%;
@@ -99,11 +147,11 @@ header nav{text-align: center;}
     background-color: #000;
 }
 
-.gamefield.choose-field.player-one-active .field-col:hover:after, .gamefield.player-one-active .field-col.chosen:after, .gamefield .field-col.chosen.player-one:after{
+.gamefield.choose-field.player-one-active .field-col:hover:after, .gamefield .field-col.chosen.player-one:after{
     background-color: #ff0000;
 }
 
-.gamefield.choose-field.player-two-active .field-col:hover:after, .gamefield.player-two-active .field-col.chosen:after, .gamefield .field-col.chosen.player-two:after{
+.gamefield.choose-field.player-two-active .field-col:hover:after, .gamefield .field-col.chosen.player-two:after{
     background-color: #0000ff;
 }
 

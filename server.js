@@ -32,7 +32,7 @@ app.get('/room', (request, response) => {response.sendFile(__dirname + '/room.ht
 
 // Serve static files.
 app.get('/game.js', (request, response) => {response.sendFile(__dirname + '/assets/js/game.js');});
-app.get('/game-local.js', (request, response) => {response.sendFile(__dirname + '/local/js/game.js');});
+app.get('/game-local.js', (request, response) => {response.sendFile(__dirname + '/local/js/game-local.js');});
 app.get('/style.css', (request, response) => {response.sendFile(__dirname + '/assets/css/style.css');});
 app.get('/style-local.css', (request, response) => {response.sendFile(__dirname + '/local/css/style.css');});
 app.get('/index.css', (request, response) => {response.sendFile(__dirname + '/assets/css/index.css');});
@@ -130,25 +130,25 @@ io.of("/").on("connection", (socket) => {
 
     // Player turn is over.
     socket.on('startNewTurn', (gameData) => {
-
-        console.log(gameData);
-        
+        // Change the activePlayer number.
         if(gameData.player == "player-one")
             activePlayerNumber = 2;
         else
             activePlayerNumber = 1;
 
+        // Update the current turn.
         totalTurns = gameData.turns;
         gameData.turns = (totalTurns + 1);
         
+        // Update the activePlayer number for the client.
         gameData['activePlayer'] = activePlayerNumber;
 
         // Send the data to start a new turn.
         io.of("/").in(currentroomid).emit("startNewTurn", gameData);
     });
 
-    socket.on('winGame', (player) => {
-        io.of("/").in(currentroomid).emit("winGame", player);
+    socket.on('endGame', (data) => {
+        io.of("/").in(currentroomid).emit("endGame", data);
     });
 
     socket.on('chatMessage', (player, msg) => {

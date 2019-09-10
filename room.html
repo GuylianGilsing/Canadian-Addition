@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Canadees Vermenigvuldigen</title>
     <!-- Css -->
-    <link rel="stylesheet" href="http://cdn.guyliangilsing.me/frameworks/guylianize/skeleton/V1.1.0/guylianize.min.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.guyliangilsing.me/frameworks/guylianize/skeleton/V1.1.0/guylianize.min.css" type="text/css">
     <link rel="stylesheet" href="style.css" type="text/css">
     <!-- Javascript -->
     <script src="./socket.io/socket.io.js"></script>
@@ -21,7 +21,14 @@
             </div>
             <div class="clear"></div>
             <div class="gamefield choose-field">
-                
+                <!-- Choosefield will be generated in here. -->                
+            </div>
+            <div id="gamefield-popup">
+                <div class="messagebox">
+                    <h3>Einde van het spel</h3>
+                    <p class="status font-light">Speler 1 heeft gewonnen</p>
+                    <a href="/" class="btn btn-color-red">Homepage</a>
+                </div>
             </div>
             <div id="preloader" class="show">
                 <p>Wachten op speler 2...</p>
@@ -34,7 +41,7 @@
             </div>
             <div id="game-chat">
                 <div class="messages" id="message-container">
-                    <p class="chat-message global">Speler 1 is aan de beurt</p>
+                    <!-- Javascript will populate this container -->
                 </div>
                 <div>
                     <textarea id="chat-bar" rows="5" onkeypress="onTextChange()"></textarea>
