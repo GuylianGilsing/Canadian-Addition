@@ -300,11 +300,13 @@ socket.on('startNewTurn', (data) => {
     {
         chooseFieldHoverClass = 'player-one-active';
         chatMessagesContainer.innerHTML += '<p class="chat-message global">Speler 1 is aan de beurt</p>';
+        ScrollChatToBottom();
     }
     else
     {
         chooseFieldHoverClass = 'player-two-active';
         chatMessagesContainer.innerHTML += '<p class="chat-message global">Speler 2 is aan de beurt</p>';
+        ScrollChatToBottom();
     }
 
     // Set the new player active class to the choose field to change the hover.

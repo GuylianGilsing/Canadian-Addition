@@ -10,17 +10,18 @@ socket.on("roomRequest", ()=>{
 
 socket.on("chatMessageReceived", (player, msg)=>{
     var node = document.createElement("p");
-    var element = document.getElementById("message-container");
-    console.log(player);
+    var element = document.querySelector("#message-container");
+
     if (player == currentPlayer)
-    {node.className = "chat-message self";}
-    else {node.className = "chat-message";}
+        node.className = "chat-message self";   
+    else 
+        node.className = "chat-message";
 
     var textnode = document.createTextNode(msg);
     node.appendChild(textnode);
     element.appendChild(node);
-    console.log("test");
-    element.scrollTop = element.scrollHeight - element.clientHeight;
+
+    ScrollChatToBottom();
 });
 
 socket.on("disconnect", (msg)=>{
@@ -37,4 +38,10 @@ function onTextChange() {
     if (key === 13) {
         sendMessage();
     }
+}
+
+function ScrollChatToBottom()
+{
+    var element = document.querySelector("#message-container");
+    element.scrollTop = element.scrollHeight - element.clientHeight;
 }
