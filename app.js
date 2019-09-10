@@ -25,7 +25,7 @@ socket.on("chatMessageReceived", (player, msg)=>{
 });
 
 socket.on("disconnect", (msg)=>{
-    window.location =("/");
+    window.location = ("/");
 });
 
 function sendMessage() {

@@ -50,6 +50,9 @@ let currentPlayerActive = 0;
 // Keeps track of which columns are selected by the player in a turn.
 let chosenColumns = [];
 
+// Indicates if the turn timer gets used.
+let turnTimerEnabled = true;
+
 // The name of the winning player gets save to this variable.
 let playerWon = undefined;
 
@@ -57,11 +60,181 @@ let gameUI = {
     'player-active': document.querySelector("#game-ui.player-active"),
 }
 
+// Simple turn timer.
+var TurnTimer = {
+    'turnTimerElement': document.querySelector("#turntimer"),
+    'timerObject': null,
+    'time': {
+        'seconds': 0,
+        'minutes': 0,
+        'hours': 0
+    },
+    'settings': {
+        'countType': "down",
+        'presetSeconds': 5,
+        'presetMinutes': 0,
+        'presetHours': 0,
+    },
+    // Starts the timer.
+    start()
+    {
+        if(TurnTimer.settings.countType == "down")
+        {
+            TurnTimer.time.seconds = TurnTimer.settings.presetSeconds;
+            TurnTimer.time.minutes = TurnTimer.settings.presetMinutes;
+            TurnTimer.time.hours = TurnTimer.settings.presetHours;
+        }
+
+        TurnTimer.turnTimerElement.innerHTML = 'Tijd: ' + TurnTimer.getTime();
+        TurnTimer.timerObject = setInterval(TurnTimer.timerTick, 1000);
+    },
+    stop()
+    {
+        TurnTimer.time.seconds = 0;
+        TurnTimer.time.minutes = 0;
+        TurnTimer.time.hours = 0;
+
+        clearInterval(TurnTimer.timerObject);
+        TurnTimer.turnTimerElement.innerHTML = 'Tijd: ' + TurnTimer.getTime();
+    },
+    timerTick()
+    {
+        // Add per tick 1 second to the seconds timer.
+
+        if(TurnTimer.settings.countType == "down")
+        {
+            // Check if we surpassed 60 seconds.
+            if(TurnTimer.time.seconds <= 0)
+            {
+                // Check if we surpassed 60 minutes.
+                if(TurnTimer.time.minutes <= 0)
+                {
+                    if((TurnTimer.time.hours - 1) <= 0)
+                    {
+                        // Clear the timeout and call the timeSurpassed function.
+                        clearInterval(TurnTimer.timerObject);
+                        TurnTimer.timeSurpassed();
+                        return;
+                    }
+
+                    TurnTimer.time.minutes = 59;
+                    TurnTimer.time.hours -= 1;
+                }
+
+                TurnTimer.time.minutes -= 1;
+                TurnTimer.time.seconds = 59;
+            }
+            else
+            {
+                TurnTimer.time.seconds -= 1;
+            }
+        }
+        else
+        {
+            // Check if we surpassed 60 seconds.
+            if(TurnTimer.time.seconds >= 60)
+            {
+                // Check if we surpassed 60 minutes.
+                if(TurnTimer.time.minutes >= 60)
+                {
+                    TurnTimer.time.minutes = 0;
+                    TurnTimer.time.hours += 1;
+                }
+
+                TurnTimer.time.seconds = 1;
+            }
+            else
+            {
+                TurnTimer.time.seconds += 1;
+            }
+
+            // Check if we have surpassed the preset time.
+            if( TurnTimer.time.seconds >= TurnTimer.settings.presetSeconds &&
+                TurnTimer.time.minutes >= TurnTimer.settings.presetMinutes &&
+                TurnTimer.time.hours >= TurnTimer.settings.presetHours
+            )
+            {
+                // Clear the timeout and call the timeSurpassed function.
+                clearInterval(TurnTimer.timerObject);
+                TurnTimer.timeSurpassed();
+            }
+        }
+
+        TurnTimer.turnTimerElement.innerHTML = 'Tijd: ' + TurnTimer.getTime();
+    },
+    getTime()
+    {
+        let output = "";
+        
+        // Add hours.
+        if(TurnTimer.time.hours < 10)
+            output += "0" + String(TurnTimer.time.hours) + ":";
+        else
+            output += String(TurnTimer.time.hours) + ":";
+
+        // Add minutes.
+        if(TurnTimer.time.minutes < 10)
+            output += "0" + String(TurnTimer.time.minutes) + ":";
+        else
+            output += String(TurnTimer.time.minutes) + ":";
+
+        // Add seconds.
+        if(TurnTimer.time.seconds < 10)
+            output += "0" + String(TurnTimer.time.seconds);
+        else
+            output += String(TurnTimer.time.seconds);
+
+        return output;
+    },
+    // This function needs to be overwritten.
+    timeSurpassed: ()=>{
+        socket.emit('endTurn', chosenColumns);
+    }
+}
+
 /*
 
     --- Initialization ---
 
 */
+
+function SetPlayfieldMode(mode)
+{
+    switch(mode)
+    {
+        case "enkeltallen":
+            // Matrix of the playfield.
+            fieldMatrix = [
+                [1, 2, 3, 4, 5, 6],
+                [7, 8, 9, 10, 12, 14],
+                [15, 16, 18, 20, 21, 24],
+                [25, 27, 28, 30, 32, 35],
+                [36, 40, 42, 45, 48, 49],
+                [54, 56, 63, 64, 72, 81]
+            ];
+
+            chooseMatrix = [
+                [7, 8, 9],
+                [1, 2, 3, 4, 5, 6]
+            ];
+            break;
+        case "tientallen":
+            fieldMatrix = [
+                [100, 200, 300, 400, 500, 600],
+                [700, 800, 900, 1000, 1200, 1400],
+                [1500, 1600, 1800, 2000, 2100, 2400],
+                [2500, 2700, 2800, 3000, 3200, 3500],
+                [3600, 4000, 4200, 4500, 4800, 4900],
+                [5400, 5600, 6300, 6400, 7200, 8100]
+            ];
+
+            chooseMatrix = [
+                [70, 80, 90],
+                [10, 20, 30, 40, 50, 60]
+            ];
+            break;
+    }
+}
 
 function GeneratePlayField()
 {
@@ -190,6 +363,7 @@ socket.on('allPlayersJoined', () => {
     playfield.classList.remove('hide');
     document.querySelector("#preloader.show").remove();
 
+    SetPlayfieldMode("enkeltallen");
     GeneratePlayField();
     StartGame();
     
@@ -199,6 +373,10 @@ socket.on('allPlayersJoined', () => {
 
 // Ends a turn.
 socket.on('endTurn', (columns) => {
+    // Disable the turn timer.
+    if(turnTimerEnabled == true)
+        TurnTimer.stop();
+
     UpdateInternalGameFieldColumns();
 
     // Loop over the columns array and show the objects in the game and choose field.
@@ -217,6 +395,32 @@ socket.on('endTurn', (columns) => {
             }
         }
     }
+
+    // Check if the columns are undefined, if so then start a new turn.
+    if(columns.length <= 0 || columns == undefined)
+    {
+        // Prepare the new turn data.
+        let playerActive = currentPlayerActive == 1 ? 'player-one' : 'player-two';
+
+        let newTurnData = {
+            'player': playerActive,
+            'turns': currentTurn,
+            'lastSelectedChooseColumn': columns[1]
+        };
+
+        // Make sure that the startNewTurn event only gets called by the current active player,
+        // this will prevent that the turn gets started twice.
+        if((currentPlayerActive == 1 && currentPlayer == 'player-one') || 
+           (currentPlayerActive == 2 && currentPlayer == 'player-two')
+        )
+        {
+            socket.emit('startNewTurn', newTurnData);
+        }
+
+        return;
+    }
+    
+    console.log(columns);
 
     // Get the two selected column' numbers and calculate the sum of them.
     // After that we get the gamefield column that has the finalnumber.
@@ -271,10 +475,24 @@ socket.on('endTurn', (columns) => {
 
 // Starts a new turn.
 socket.on('startNewTurn', (data) => {
+    // Start the turn timer if it is enabled.
+    if(turnTimerEnabled)
+    {
+        if((currentPlayerActive == 1 && currentPlayer == 'player-one') || 
+           (currentPlayerActive == 2 && currentPlayer == 'player-two')
+        )
+        {
+            TurnTimer.start();
+        }
+    }
+
     // Set the last selected choose column as the first chosen column,
     // this way we can calculate based on the last en new chosen columns.
     chosenColumns = [];
-    chosenColumns[0] = data.lastSelectedChooseColumn;
+
+    // Make sure that there is a selected column.
+    if(data.lastSelectedChooseColumn != undefined && data.lastSelectedChooseColumn != null)
+        chosenColumns[0] = data.lastSelectedChooseColumn;
 
     // Enable the game logic for the next player.
     chooseColumnAmmountInTurn = 1;
@@ -290,9 +508,12 @@ socket.on('startNewTurn', (data) => {
     }
 
     // Select the last chosen choose column.
-    let lastChooseCol = fieldColumns.chooseField['x' + chosenColumns[0].x + 'y' + chosenColumns[0].y].element;
-    lastChooseCol.classList.add('chosen');
-    lastChooseCol.classList.add(data.player);
+    if(data.lastSelectedChooseColumn != undefined)
+    {
+        let lastChooseCol = fieldColumns.chooseField['x' + chosenColumns[0].x + 'y' + chosenColumns[0].y].element;
+        lastChooseCol.classList.add('chosen');
+        lastChooseCol.classList.add(data.player);
+    }
 
     // Change the choose column hover.
     let chooseFieldHoverClass = '';

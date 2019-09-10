@@ -193,6 +193,14 @@ body{
 
 */
 
+#turntimer{
+    top: 6px;
+    right: 24px;
+    position: absolute;
+    color: #000;
+    font-weight: 600;
+}
+
 /* Playfield styles */
 #game-field{
     width: 100%;
