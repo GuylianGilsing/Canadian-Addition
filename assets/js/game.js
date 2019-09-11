@@ -387,7 +387,6 @@ socket.on('allPlayersJoined', () => {
 
 // Ends a turn.
 socket.on('endTurn', (columns) => {
-    console.log(columns);
     // Disable the turn timer.
     if(turnTimerEnabled == true)
         TurnTimer.stop();
@@ -412,13 +411,8 @@ socket.on('endTurn', (columns) => {
     }
 
     // Check if the columns are undefined, if so then start a new turn.
-    console.log(columns);
-    console.log('colLength: ' + columns.length + ' chooseAmmount: ' + chooseColumnAmmountInTurn);
-    console.log((columns.length - 1) < chooseColumnAmmountInTurn);
-
     if(columns.length <= 0 || columns == undefined || (columns.length - 1) < chooseColumnAmmountInTurn)
     {
-        console.log("TURNTIMEROVER");
         chosenColumns = [];
 
         // Prepare the new turn data.
@@ -574,7 +568,6 @@ socket.on('startNewTurn', (data) => {
            (currentPlayerActive == 2 && currentPlayer == 'player-two')
         )
         {
-            console.log(chosenColumns);
             TurnTimer.start();
         }
     }

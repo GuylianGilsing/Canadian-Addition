@@ -101,13 +101,14 @@ function StartGame()
     // Get all of the field columns from the playfield.
     playCols = document.querySelectorAll("#game-field > .gamefield .field-row .field-col");
 
-    for(let col of playCols)
-    {
-        col.addEventListener('click', function(){
-            this.classList.add('chosen');
-            this.classList.add('player-one');
-        })
-    }
+    // Debug
+    // for(let col of playCols)
+    // {
+    //     col.addEventListener('click', function(){
+    //         this.classList.add('chosen');
+    //         this.classList.add('player-one');
+    //     })
+    // }
 
     gameRunning = true;
 }
