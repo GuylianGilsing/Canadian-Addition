@@ -284,11 +284,18 @@ body{
     background-color: #000;
 }
 
+.gamefield.choose-field.prohibit-input .choose-row .field-col{
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .gamefield.choose-field.player-one-active .field-col:hover:after, .gamefield .field-col.chosen.player-one:after{
+    cursor: pointer;
     background-color: #ff0000;
 }
 
 .gamefield.choose-field.player-two-active .field-col:hover:after, .gamefield .field-col.chosen.player-two:after{
+    cursor: pointer;
     background-color: #0000ff;
 }
 

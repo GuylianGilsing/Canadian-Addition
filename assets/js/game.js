@@ -51,7 +51,7 @@ let currentPlayerActive = 0;
 let chosenColumns = [];
 
 // Indicates if the turn timer gets used.
-let turnTimerEnabled = false;
+let turnTimerEnabled = true;
 
 // The name of the winning player gets save to this variable.
 let playerWon = undefined;
@@ -380,10 +380,14 @@ socket.on('allPlayersJoined', () => {
             TurnTimer.start();
         }
     }
+
+    // Limit player input.
+    ProhibitInput();
 })
 
 // Ends a turn.
 socket.on('endTurn', (columns) => {
+    console.log(columns);
     // Disable the turn timer.
     if(turnTimerEnabled == true)
         TurnTimer.stop();
@@ -408,8 +412,15 @@ socket.on('endTurn', (columns) => {
     }
 
     // Check if the columns are undefined, if so then start a new turn.
+    console.log(columns);
+    console.log('colLength: ' + columns.length + ' chooseAmmount: ' + chooseColumnAmmountInTurn);
+    console.log((columns.length - 1) < chooseColumnAmmountInTurn);
+
     if(columns.length <= 0 || columns == undefined || (columns.length - 1) < chooseColumnAmmountInTurn)
     {
+        console.log("TURNTIMEROVER");
+        chosenColumns = [];
+
         // Prepare the new turn data.
         let playerActive = currentPlayerActive == 1 ? 'player-one' : 'player-two';
 
@@ -546,9 +557,13 @@ socket.on('startNewTurn', (data) => {
     }
 
     // Set the new player active class to the choose field to change the hover.
+    choosefield.classList.remove('prohibit-input');
     choosefield.classList.remove('player-one-active');
     choosefield.classList.remove('player-two-active');
     choosefield.classList.add(chooseFieldHoverClass);
+
+    // Limit the player interactability.
+    ProhibitInput();  
 
     UpdateInternalGameFieldColumns();
 
@@ -618,6 +633,17 @@ socket.on('endGame', (data) => {
 
 */
 
+// Prohibits input from inactive players.
+function ProhibitInput()
+{
+    if((currentPlayerActive == 1 && currentPlayer == 'player-two') || 
+       (currentPlayerActive == 2 && currentPlayer == 'player-one')
+    )
+    {
+        choosefield.classList.add('prohibit-input');
+    }
+}
+
 function ChooseColumn()
 {
     // Make sure that the game is running.
@@ -662,6 +688,8 @@ function ChooseColumn()
             }
         }
 
+        // CONTINUE
+
         // Make sure that the column is empty when we want to end the turn.
         if(columnIsEmpty)
         {
@@ -672,6 +700,7 @@ function ChooseColumn()
             // Remove the last element from the chosenColumns array.
             chosenColumns.pop();
             chatMessagesContainer.innerHTML += '<p class="chat-message global txt-color-red">Kolom is al gekozen</p>';
+            ScrollChatToBottom();
         }
     }
 }
@@ -714,12 +743,15 @@ function CheckDraw(col)
     let output = true;
     let chooseValue = col.number;
 
+    // Calculate all of the values with the choosefield numbers,
+    // this way we can switch matrixes more easily.
     let outcomes = [];
-    for(let i = 1; i <= 9; i += 1)
+    for(let key in fieldColumns.chooseField)
     {
-        outcomes.push(chooseValue * i);
+        outcomes.push(chooseValue * fieldColumns.chooseField[key].number);
     }
 
+    // Loop over all of the outcomes and check if there is a unchosen column with the same value.
     for(let key in fieldColumns.gameField)
     {
         let column = fieldColumns.gameField[key].element;
