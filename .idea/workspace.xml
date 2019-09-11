@@ -16,6 +16,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="CSS File" />
       </list>
     </option>
@@ -25,12 +26,18 @@
   </component>
   <component name="ProjectId" id="1QSDN63hDFMWfFG9NV410PgCJUN" />
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../New folder" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Jeremey\Desktop\Canadian-Addition\assets\img" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -57,7 +64,7 @@
       <workItem from="1567755062059" duration="12000" />
       <workItem from="1568013667341" duration="10528000" />
       <workItem from="1568109655617" duration="1579000" />
-      <workItem from="1568182190832" duration="3317000" />
+      <workItem from="1568182190832" duration="6339000" />
     </task>
     <servers />
   </component>
