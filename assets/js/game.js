@@ -202,7 +202,7 @@ function SetPlayfieldMode(mode)
 {
     switch(mode)
     {
-        case "enkeltallen":
+        case "E":
             // Matrix of the playfield.
             fieldMatrix = [
                 [1, 2, 3, 4, 5, 6],
@@ -218,7 +218,7 @@ function SetPlayfieldMode(mode)
                 [1, 2, 3, 4, 5, 6]
             ];
             break;
-        case "tientallen":
+        case "T":
             fieldMatrix = [
                 [100, 200, 300, 400, 500, 600],
                 [700, 800, 900, 1000, 1200, 1400],

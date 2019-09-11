@@ -57,7 +57,7 @@ io.of("/").on("connection", (socket) => {
     //send request to join the room
     socket.emit("roomRequest");
     //join room
-    socket.on("joinRoom", (room) => {
+    socket.on("joinRoom", (room, gameType) => {
         currentroomid = room;
         //Select user amount, check if room exist
         con.query("SELECT user_amount, (SELECT Count(*) FROM rooms WHERE room_id = '" + currentroomid + "') AS roomCount FROM rooms WHERE room_id = '" + currentroomid + "'", function (err, result) {
@@ -68,10 +68,9 @@ io.of("/").on("connection", (socket) => {
                     //update room client amount, join room
                     con.query("UPDATE rooms SET user_amount = '2' WHERE room_id = '" + currentroomid + "'", function (err, result) {
                         socket.join(currentroomid);
-
+                        io.of("/").in(currentroomid).emit("gameType");
                         io.of("/").in(currentroomid).emit("playerTwo");
                         io.of("/").in(currentroomid).emit("allPlayersJoined");
-                        
                         console.log("client joined room:" + currentroomid);
                     });
                 } else {

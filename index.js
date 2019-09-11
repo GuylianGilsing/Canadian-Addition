@@ -4,9 +4,9 @@ function uuidv4() {
         return v.toString(16);
     });
 }
-function createRoom()
+function createRoom(gameType)
 {
-    window.location =("room?" + uuidv4());
+    window.location =("room?" + uuidv4() + gameType);
 }
 function localPlay() {
     window.location = ("/local");

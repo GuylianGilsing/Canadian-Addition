@@ -3,9 +3,12 @@ var currentRoomId = undefined;
 var socket = io();
 var url = location.href;
 url = url.substring(url.indexOf("?")+1);
+gameType = url.substr(-1);
+
 
 socket.on("roomRequest", ()=>{
-    socket.emit("joinRoom", url)
+    socket.emit("joinRoom", url, gameType
+    )
 });
 
 socket.on("chatMessageReceived", (player, msg)=>{
@@ -22,6 +25,10 @@ socket.on("chatMessageReceived", (player, msg)=>{
     element.appendChild(node);
 
     ScrollChatToBottom();
+});
+
+socket.on("gameType", ()=>{
+    SetPlayfieldMode(gameType);
 });
 
 socket.on("disconnect", (msg)=>{
