@@ -51,7 +51,7 @@ let currentPlayerActive = 0;
 let chosenColumns = [];
 
 // Indicates if the turn timer gets used.
-let turnTimerEnabled = true;
+let turnTimerEnabled = false;
 
 // The name of the winning player gets save to this variable.
 let playerWon = undefined;
@@ -187,7 +187,7 @@ var TurnTimer = {
         return output;
     },
     // This function needs to be overwritten.
-    timeSurpassed: ()=>{
+    timeSurpassed: () => {
         socket.emit('endTurn', chosenColumns);
     }
 }
@@ -303,7 +303,6 @@ function UpdateInternalGameFieldColumns()
         let colNumber = Number(col.getAttribute('data-number'));
         let colOwner = col.classList.contains('player-one') ? 'player-one' : col.classList.contains('player-two') ? 'player-two' : 'none'
         
-
         fieldColumns.chooseField['x' + colX + 'y' + colY] = {
             'x': colX,
             'y': colY,
@@ -321,7 +320,7 @@ function StartGame()
     choosefield.classList.add('player-one-active');
 
     // Set the ammount of turns for player one.
-    if(currentPlayer == 'player-one' && currentTurn == 0)
+    if((currentPlayer == 'player-one' && currentTurn == 0) || turnTimerEnabled)
         chooseColumnAmmountInTurn = 2;
 
     // Add choose column logic.
@@ -369,6 +368,17 @@ socket.on('allPlayersJoined', () => {
     
     currentPlayerActive = 1;
     chatMessagesContainer.innerHTML += '<p class="chat-message global">Speler 1 is aan de beurt</p>';
+
+    // Start the turn timer.
+    if(turnTimerEnabled)
+    {
+        if((currentPlayerActive == 1 && currentPlayer == 'player-one') || 
+           (currentPlayerActive == 2 && currentPlayer == 'player-two')
+        )
+        {
+            TurnTimer.start();
+        }
+    }
 })
 
 // Ends a turn.
@@ -397,7 +407,7 @@ socket.on('endTurn', (columns) => {
     }
 
     // Check if the columns are undefined, if so then start a new turn.
-    if(columns.length <= 0 || columns == undefined)
+    if(columns.length <= 0 || columns == undefined || (columns.length - 1) < chooseColumnAmmountInTurn)
     {
         // Prepare the new turn data.
         let playerActive = currentPlayerActive == 1 ? 'player-one' : 'player-two';
@@ -405,7 +415,7 @@ socket.on('endTurn', (columns) => {
         let newTurnData = {
             'player': playerActive,
             'turns': currentTurn,
-            'lastSelectedChooseColumn': columns[1]
+            'lastSelectedChooseColumn': columns[1] != undefined ? columns[1] : columns[0]
         };
 
         // Make sure that the startNewTurn event only gets called by the current active player,
@@ -420,8 +430,6 @@ socket.on('endTurn', (columns) => {
         return;
     }
     
-    console.log(columns);
-
     // Get the two selected column' numbers and calculate the sum of them.
     // After that we get the gamefield column that has the finalnumber.
     let finalNumber = columns[0].number * columns[1].number;
@@ -475,36 +483,42 @@ socket.on('endTurn', (columns) => {
 
 // Starts a new turn.
 socket.on('startNewTurn', (data) => {
-    // Start the turn timer if it is enabled.
-    if(turnTimerEnabled)
-    {
-        if((currentPlayerActive == 1 && currentPlayer == 'player-one') || 
-           (currentPlayerActive == 2 && currentPlayer == 'player-two')
-        )
-        {
-            TurnTimer.start();
-        }
-    }
-
     // Set the last selected choose column as the first chosen column,
     // this way we can calculate based on the last en new chosen columns.
     chosenColumns = [];
 
     // Make sure that there is a selected column.
     if(data.lastSelectedChooseColumn != undefined && data.lastSelectedChooseColumn != null)
+    {
         chosenColumns[0] = data.lastSelectedChooseColumn;
+        chooseColumnAmmountInTurn = 1;
+    }
 
     // Enable the game logic for the next player.
-    chooseColumnAmmountInTurn = 1;
     currentPlayerActive = data.activePlayer;
     currentTurn = data.turns;
 
-    // Loop over all of the choose columns and remove the chose classes.
-    for(let key in fieldColumns.chooseField)
+    // Only remove the chosen classes of the choose columns when there aren't two colums chosen to start the game,
+    // or when there are more than 2 columns chosen.
+    if((chosenColumns.length - 1) <= chooseColumnAmmountInTurn && chooseColumnAmmountInTurn == 2)
     {
-        let col = fieldColumns.chooseField[key];
-        col.element.classList.remove('chosen');
-        col.element.classList.remove(data.player);
+        // Loop over all of the choose columns and remove the chose classes.
+        for(let key in fieldColumns.chooseField)
+        {
+            let col = fieldColumns.chooseField[key];
+            col.element.classList.remove('chosen');
+            col.element.classList.remove(data.player);
+        }
+    }
+    else if(chosenColumns.length >= chooseColumnAmmountInTurn && chooseColumnAmmountInTurn != 2)
+    {
+        // Loop over all of the choose columns and remove the chose classes.
+        for(let key in fieldColumns.chooseField)
+        {
+            let col = fieldColumns.chooseField[key];
+            col.element.classList.remove('chosen');
+            col.element.classList.remove(data.player);
+        }
     }
 
     // Select the last chosen choose column.
@@ -536,12 +550,28 @@ socket.on('startNewTurn', (data) => {
     choosefield.classList.add(chooseFieldHoverClass);
 
     UpdateInternalGameFieldColumns();
+
+    // Start the turn timer if it is enabled.
+    if(turnTimerEnabled)
+    {
+        if((currentPlayerActive == 1 && currentPlayer == 'player-one') || 
+           (currentPlayerActive == 2 && currentPlayer == 'player-two')
+        )
+        {
+            console.log(chosenColumns);
+            TurnTimer.start();
+        }
+    }
 });
 
 // Ends the game.
 socket.on('endGame', (data) => {
     choosefield.classList.remove('game-active');
     gameRunning == false;
+
+    // Stop the turn timer.
+    if(turnTimerEnabled)
+        TurnTimer.stop();
     
     // Remove eventListeners.
     let chooseColumns = document.querySelectorAll(".gamefield.choose-field .choose-row .field-col");
