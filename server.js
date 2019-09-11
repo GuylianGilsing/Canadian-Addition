@@ -57,7 +57,7 @@ io.of("/").on("connection", (socket) => {
     //send request to join the room
     socket.emit("roomRequest");
     //join room
-    socket.on("joinRoom", (room, gameType) => {
+    socket.on("joinRoom", (room) => {
         currentroomid = room;
         //Select user amount, check if room exist
         con.query("SELECT user_amount, (SELECT Count(*) FROM rooms WHERE room_id = '" + currentroomid + "') AS roomCount FROM rooms WHERE room_id = '" + currentroomid + "'", function (err, result) {
@@ -108,6 +108,7 @@ io.of("/").on("connection", (socket) => {
                         var counter;
                         if (result[0].user_amount === 2) {
                             console.log("client has left room:" + currentroomid);
+                            io.of("/").in(currentroomid).emit("disconnect");
                             counter = 1;
                         } else {
                             counter = 2;

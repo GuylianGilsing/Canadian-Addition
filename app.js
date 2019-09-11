@@ -2,13 +2,13 @@ var currentRoomId = undefined;
 
 var socket = io();
 var url = location.href;
+var urlFull = url;
 url = url.substring(url.indexOf("?")+1);
 gameType = url.substr(-1);
 
-
 socket.on("roomRequest", ()=>{
-    socket.emit("joinRoom", url, gameType
-    )
+    document.getElementById("hidden-textarea").innerHTML = urlFull;
+    socket.emit("joinRoom", url, urlFull)
 });
 
 socket.on("chatMessageReceived", (player, msg)=>{
@@ -51,4 +51,12 @@ function ScrollChatToBottom()
 {
     var element = document.querySelector("#message-container");
     element.scrollTop = element.scrollHeight - element.clientHeight;
+}
+function showInvite() {
+    var node = document.createElement("p");
+    var element = document.querySelector("#message-container");
+    node.className = "chat-message global";
+    var textnode = document.createTextNode(urlFull);
+    node.appendChild(textnode);
+    element.appendChild(node);
 }

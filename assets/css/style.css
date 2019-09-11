@@ -136,7 +136,7 @@ body{
 #message-container
 {
     overflow: auto;
-    height: 36em;
+    height: inherit;
 }
 
 /* 
@@ -300,4 +300,25 @@ body{
 
 .gamefield.choose-field .field-row{
     text-align: center;
+}
+
+/*
+
+    --- invite ---
+
+*/
+#invite-container{
+    text-align: center;
+    width: 100%;
+    z-index: 2;
+}
+#invite{
+    color: #000;
+    font-weight: 600;
+}
+#hidden-textarea
+{
+    resize: none;
+    outline: none;
+    width: 95%;
 }

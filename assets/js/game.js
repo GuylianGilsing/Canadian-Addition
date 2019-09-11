@@ -359,6 +359,7 @@ socket.on('playerTwo', () => {
 
 // All players are joined.
 socket.on('allPlayersJoined', () => {
+    document.getElementById("invite-container").style.display = "none";
     playfield.classList.remove('hide');
     document.querySelector("#preloader.show").remove();
 
