@@ -29,6 +29,7 @@ app.on('listening', function () {
 app.get('/', (request, response) => {response.sendFile(__dirname + '/index.html');});
 app.get('/local', (request, response) => {response.sendFile(__dirname + '/local/index.html');});
 app.get('/room', (request, response) => {response.sendFile(__dirname + '/room.html');currentroomid = request.query.room;});
+app.get('/explenation', (request, response) => {response.sendFile(__dirname + '/uitleg.html');currentroomid = request.query.room;});
 
 // Serve static files.
 app.get('/game.js', (request, response) => {response.sendFile(__dirname + '/assets/js/game.js');});

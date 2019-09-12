@@ -60,3 +60,6 @@ function showInvite() {
     node.appendChild(textnode);
     element.appendChild(node);
 }
+function home() {
+    window.location = ("/");
+}

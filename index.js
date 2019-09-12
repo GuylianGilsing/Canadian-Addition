@@ -11,3 +11,9 @@ function createRoom(gameType)
 function localPlay() {
     window.location = ("/local");
 }
+function home() {
+    window.location = ("/");
+}
+function explenation() {
+    window.location = ("/explenation");
+}

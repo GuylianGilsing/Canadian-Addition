@@ -82,6 +82,10 @@ body{
     font-size: 18px;
     font-weight: normal;
 }
+#game-header:hover
+{
+    cursor: pointer;
+}
 
 /*
 
@@ -328,4 +332,24 @@ body{
     resize: none;
     outline: none;
     width: 95%;
+}
+/*
+
+    --- explanation ---
+
+*/
+#explenation-board
+{
+    width: 45em;
+    left: 20em;
+    position: absolute;
+}
+#explanation-sidebar
+{
+    width: 600px;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-right: solid 2px #000;
+    background-color: #fff;
 }
