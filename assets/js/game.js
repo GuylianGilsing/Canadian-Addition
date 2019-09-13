@@ -51,7 +51,7 @@ let currentPlayerActive = 0;
 let chosenColumns = [];
 
 // Indicates if the turn timer gets used.
-let turnTimerEnabled = true;
+let turnTimerEnabled = false;
 
 // The name of the winning player gets save to this variable.
 let playerWon = undefined;
@@ -71,7 +71,7 @@ var TurnTimer = {
     },
     'settings': {
         'countType': "down",
-        'presetSeconds': 5,
+        'presetSeconds': 0,
         'presetMinutes': 0,
         'presetHours': 0,
     },
@@ -333,6 +333,25 @@ function StartGame()
         }
     }
 
+    // Check if the turnTimer variables are altered,
+    // if so then enable the turn timer and use the preset values from the client.
+    let timerHoursElement = document.querySelector("#turntimer-hours");
+    let timerMinutesElement = document.querySelector("#turntimer-minutes");
+    let timerSecondsElement = document.querySelector("#turntimer-seconds");
+
+    if(timerHoursElement.value != 0 || timerMinutesElement.value != 0 || timerSecondsElement.value != 0)
+    {
+        turnTimerEnabled = true;
+
+        let timerSettings = {
+            'hours': timerHoursElement.value,
+            'minutes': timerMinutesElement.value,
+            'seconds': timerSecondsElement.value,
+        }
+
+        socket.emit('enableTurnTimer', timerSettings);
+    }
+
     gameRunning = true;
 }
 
@@ -368,18 +387,7 @@ socket.on('allPlayersJoined', () => {
     StartGame();
     
     currentPlayerActive = 1;
-    chatMessagesContainer.innerHTML += '<p class="chat-message global">Speler 1 is aan de beurt</p>';
-
-    // Start the turn timer.
-    if(turnTimerEnabled)
-    {
-        if((currentPlayerActive == 1 && currentPlayer == 'player-one') || 
-           (currentPlayerActive == 2 && currentPlayer == 'player-two')
-        )
-        {
-            TurnTimer.start();
-        }
-    }
+    chatMessagesContainer.innerHTML = '<p class="chat-message global">Speler 1 is aan de beurt</p>';
 
     // Limit player input.
     ProhibitInput();
@@ -484,6 +492,23 @@ socket.on('endTurn', (columns) => {
     {
         // Emit the endGame logic to all players.
         socket.emit('endGame', {'type': "draw"});
+    }
+});
+
+socket.on('enableTurnTimer', (timerSettings) => {
+    TurnTimer.settings.presetHours = timerSettings.hours;
+    TurnTimer.settings.presetMinutes = timerSettings.minutes;
+    TurnTimer.settings.presetSeconds = timerSettings.seconds;
+    turnTimerEnabled = true;
+
+    // Show the turn timer.
+    TurnTimer.turnTimerElement.classList.add("show");
+
+    if((currentPlayerActive == 1 && currentPlayer == 'player-one') || 
+       (currentPlayerActive == 2 && currentPlayer == 'player-two')
+    )
+    {
+        TurnTimer.start();
     }
 });
 

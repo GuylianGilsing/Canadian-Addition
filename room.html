@@ -36,14 +36,28 @@
             </div>
         </div>
         <div id="sidebar">
-            <div id="game-header" onclick="home()">
-
+            <div id="game-header" onclick="home();">
                 <img src="./img/candianflag.jpg" alt="Canadian Flag" class="logo">
                 <p>Canadees Vermenigvuldigen</p>
             </div>
             <div id="invite-container">
-                <p id="invite">Nodig je vriend out!</p>
-                <textarea id="hidden-textarea"></textarea>
+                <p id="invite">Stuur deze link naar je vriend!</p>
+                <textarea id="hidden-textarea" readonly="true"></textarea>
+                <p class="font-medium">Turn timer</p>
+                <div id="container-turntimer">
+                    <div class="form-field">
+                        <label for="turntimer-hours">Uren</label>
+                        <input type="number" id="turntimer-hours" class="bordered" min="0" max="99" value="0">
+                    </div>
+                    <div class="form-field">
+                        <label for="turntimer-hours">Minuten</label>
+                        <input type="number" id="turntimer-minutes" class="bordered" min="0" max="59" value="0">
+                    </div>
+                    <div class="form-field">
+                        <label for="turntimer-hours">Seconden</label>
+                        <input type="number" id="turntimer-seconds" class="bordered" min="0" max="59" value="0">
+                    </div>
+                </div>
             </div>
             <div id="game-chat">
                 <div class="messages" id="message-container">

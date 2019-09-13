@@ -129,6 +129,10 @@ io.of("/").on("connection", (socket) => {
         io.of('/').in(currentroomid).emit('endTurn', columns);
     });
 
+    socket.on('enableTurnTimer', (timerSettings) => {
+        io.of('/').in(currentroomid).emit('enableTurnTimer', timerSettings);
+    });
+
     // Player turn is over.
     socket.on('startNewTurn', (gameData) => {
         // Change the activePlayer number.

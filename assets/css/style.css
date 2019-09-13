@@ -191,11 +191,21 @@ body{
     font-size: 24px;
 }
 
+#container-turntimer .form-field{
+    max-width: 90%;
+    margin: 0 auto;
+}
+
 /*
 
     --- Playfield ---
 
 */
+
+#turntimer:not(.show){
+    opacity: 0;
+    pointer-events: none;
+}
 
 #turntimer{
     top: 6px;
