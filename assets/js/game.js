@@ -364,16 +364,12 @@ function StartGame()
 // Player one joins.
 socket.on('playerOne', () => {
     currentPlayer = 'player-one';
-    console.log(currentPlayer);
 });
 
 // Player two joins.
 socket.on('playerTwo', () => {
     if(currentPlayer == undefined)
-    {
         currentPlayer = 'player-two';
-        console.log(currentPlayer);
-    }
 });
 
 // All players are joined.
@@ -419,7 +415,7 @@ socket.on('endTurn', (columns) => {
     }
 
     // Check if the columns are undefined, if so then start a new turn.
-    if(columns.length <= 0 || columns == undefined || (columns.length - 1) < chooseColumnAmmountInTurn)
+    if((columns.length <= 0 || columns == undefined || ((columns.length < chooseColumnAmmountInTurn && chooseColumnAmmountInTurn == 2) || ((columns.length - 1) < chooseColumnAmmountInTurn && chooseColumnAmmountInTurn == 1))) && turnTimerEnabled)
     {
         chosenColumns = [];
 
