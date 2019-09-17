@@ -130,6 +130,7 @@ body{
     margin: 5px;
     outline: none;
     resize: none;
+    border: solid 1px #000;
 }
 
 #game-chat button{
