@@ -1,0 +1,367 @@
+body{
+    background-image: url('../img/background-uncolored.png');
+}
+.hide{opacity: 0; pointer-events: none}
+.show{opacity: 1; pointer-events: all}
+
+/* body::after{
+    content: '';
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    opacity: 0.2;
+    z-index: -1;
+    background-color: #000;
+} */
+
+/* 
+
+    --- Preloader ---
+
+*/
+
+#game-field #preloader{
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#preloader p{
+    font-size: 26px;
+    font-weight: 600;
+}
+
+/* 
+
+    --- Sidebar ---
+
+*/
+
+#game-container{
+    display: flex;
+    position: relative;
+    max-height: 100vh;
+    overflow-y: hidden;
+}
+
+#game-container #sidebar{
+    width: 600px;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-left: solid 2px #000;
+    background-color: #fff;
+}
+
+#game-container #game-field{
+    flex-grow: 1;
+}
+
+#game-header{
+    padding: 12px;
+    text-align: center;
+    border-bottom: solid 1px #DDD;
+}
+
+#game-header .logo{
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin: 12px auto;
+    display: block;
+}
+
+#game-header p{
+    font-size: 18px;
+    font-weight: normal;
+}
+#game-header:hover
+{
+    cursor: pointer;
+}
+
+/*
+
+    --- Game chat ---
+
+*/
+#game-chat{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+#game-chat .messages{
+    padding: 12px;
+}
+
+#game-chat .chat-message.global{
+    margin: 4px 0px;
+    text-align: center;
+    font-weight: 600;
+}
+
+#game-chat .chat-message:not(.global):not(.self){
+    padding-left: 5px;
+    border-left: solid 4px #ff0000;
+    background-image: linear-gradient(90deg, #F7F7F7, #F7F7F7, #fff);
+}
+
+#game-chat .chat-message.self:not(.global){
+    padding-right: 5px;
+    border-right: solid 4px #0000ff;
+    text-align: right;
+    background-image: linear-gradient(90deg, #fff, #F7F7F7, #F7F7F7);
+    /* background-color: #F7F7F7; */
+}
+
+#game-chat textarea{
+    width: 97%;
+    margin-bottom: 12px;
+    padding: 4px;
+    margin: 5px;
+    outline: none;
+    resize: none;
+    border: solid 1px #000;
+}
+
+#game-chat button{
+    width: unset;
+    margin-left: 5px;
+    display: block;
+}
+
+#message-container
+{
+    overflow: auto;
+    height: inherit;
+}
+
+/* 
+
+    --- Gamefield Popup ---
+
+*/
+
+#game-field #gamefield-popup:not(.show){
+    opacity: 0;
+    pointer-events: none;
+}
+
+#game-field #gamefield-popup{
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    z-index: 100;
+}
+
+#game-field #gamefield-popup:before{
+    content: '';
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    opacity: 0.4;
+    z-index: 99;
+    background-color: #000;
+}
+
+#game-field #gamefield-popup .messagebox{
+    width: 80%;
+    max-width: 500px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    z-index: 101;
+    background-color: #fff;
+}
+
+#game-field #gamefield-popup .messagebox .status{
+    margin: 12px 0px;
+    font-size: 24px;
+}
+
+#container-turntimer .form-field{
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+/*
+
+    --- Playfield ---
+
+*/
+
+#turntimer:not(.show){
+    opacity: 0;
+    pointer-events: none;
+}
+
+#turntimer{
+    top: 6px;
+    right: 24px;
+    position: absolute;
+    color: #000;
+    font-weight: 600;
+}
+
+/* Playfield styles */
+#game-field{
+    width: 100%;
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    text-align: center;
+}
+
+.gamefield{
+    width: auto;
+    /* height: 100%; */
+    margin: 0 auto;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.gamefield > p{
+    margin: 12px;
+    /* color: #fff; */
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.gamefield:not(.choose-field){
+    border-top: solid 2px #000;
+    border-left: solid 2px #000;
+}
+
+.gamefield .field-col{
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 24px;
+    border: solid 2px #000;
+    float: left;
+    background-color: #fff;
+}
+
+.gamefield .field-col p{
+    margin: 0px;
+    z-index: 10;
+    font-weight: 600;
+}
+
+.gamefield.choose-field{
+    margin-top: 24px;
+}
+
+.gamefield:not(.choose-field) .field-col{
+    border-left: none;
+    border-top: none;
+}
+
+.gamefield.choose-field .field-col{
+    margin: 6px;
+}
+
+.gamefield.choose-field .choose-row{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.gamefield.choose-field.game-active .field-col:hover:after, .gamefield .field-col.chosen:after{
+    content: '';
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    opacity: 0.5;
+    z-index: 0;
+    border-radius: 50%;
+    background-color: #000;
+}
+
+.gamefield.choose-field.prohibit-input .choose-row .field-col{
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.gamefield.choose-field.player-one-active .field-col:hover:after, .gamefield .field-col.chosen.player-one:after{
+    cursor: pointer;
+    background-color: #ff0000;
+}
+
+.gamefield.choose-field.player-two-active .field-col:hover:after, .gamefield .field-col.chosen.player-two:after{
+    cursor: pointer;
+    background-color: #0000ff;
+}
+
+.gamefield .field-row{
+    display: block;
+    clear: both;
+    float: none;
+}
+
+.gamefield.choose-field .field-row{
+    text-align: center;
+}
+
+/*
+
+    --- invite ---
+
+*/
+#invite-container{
+    text-align: center;
+    width: 100%;
+    z-index: 2;
+}
+#invite{
+    color: #000;
+    font-weight: 600;
+}
+#hidden-textarea
+{
+    resize: none;
+    outline: none;
+    width: 95%;
+}
+/*
+
+    --- explanation ---
+
+*/
+#explenation-board
+{
+    width: 45em;
+    left: 20em;
+    position: absolute;
+}
+#explanation-sidebar
+{
+    width: 600px;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-right: solid 2px #000;
+    background-color: #fff;
+}
